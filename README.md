@@ -21,7 +21,7 @@ Capstone Project for BLM 5121 Web Mining (WM)
 ## Usage
 
 ### Directly
-    - streamlit run streamlit_app.py
+    - streamlit run app.py
 
 ### with Docker
     - docker build -t web_mining_project .

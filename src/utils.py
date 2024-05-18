@@ -1,7 +1,7 @@
 import os
 
 import pandas as pd
-from kaggle.api.kaggle_api_extended import KaggleApi
+# from kaggle.api.kaggle_api_extended import KaggleApi
 from sklearn.metrics import (accuracy_score, auc, classification_report,
                              confusion_matrix, f1_score, precision_score,
                              recall_score, roc_curve)

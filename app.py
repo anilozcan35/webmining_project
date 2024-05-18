@@ -12,7 +12,6 @@ from src.prediction import get_prediction_records
 from src.preprocess import preprocess
 from src.streamlit_functions import (data_metadata, data_preview, data_profiling, data_profilingA)
 # from src.utils import download_dataset_from_kaggle
-
 # from st_pages import show_pages_from_config
 
 warnings.filterwarnings("ignore")
@@ -38,12 +37,22 @@ def proposal():
         st.markdown(p.read())
 
 
+def algorithm():
+    """Algorithm Design & Modelling Page"""
+    st.title('Algorithm Design & Modelling')
+    st.image(image="./pipeline/AlgorithmDesign&Modelling.png",
+             caption="Algorithm Design & Modelling",
+             width=200,
+             use_column_width="auto"
+             )
+
+
 def pipeline():
     """Project System Design Page"""
     st.title('Project System Design')
     st.image(image="./pipeline/SystemDesign.jpg",
              caption="Project System Design",
-             width=200, 
+            #  width=200, 
              use_column_width="auto"
              )
 
@@ -86,7 +95,7 @@ def classification():
     with tab1:
         st.header("Decision Tree (DT) Algorithm")
         # st.write('Decision Tree işlemi yapılacak.')
-        tab1_1, tab1_2, tab1_3, tab1_4 = st.tabs(["Training", "Model Charts", "Prediction", "Other"])
+        tab1_1, tab1_2, tab1_3, tab1_4 = st.tabs(["Training", "Model Charts", "Classification Report", "Prediction"])
 
         with tab1_1:
             st.header("Decision Tree Training Component")
@@ -106,6 +115,11 @@ def classification():
                      )
 
         with tab1_3:
+            st.header("Decision Tree (DT) Classification Report")
+            # st.dataframe(classification_report)
+            st.dataframe(pd.read_csv("charts/dt_classification_report.csv"))
+
+        with tab1_4:
             st.header("Decision Tree (DT) Prediction")
             prediction_record = get_prediction_records(key_start=0)
             print(prediction_record)
@@ -115,14 +129,9 @@ def classification():
                 st.header("Prediction")
                 st.write(pred)
 
-        with tab1_4:
-            st.header("Decision Tree (DT) Classification Report")
-            # st.dataframe(classification_report)
-            st.dataframe(pd.read_csv("charts/dt_classification_report.csv"))
-
     with tab2:
         st.header("K Nearest Neighbor (KNN)")
-        tab2_1, tab2_2, tab2_3, tab2_4 = st.tabs(["Training", "Model Charts", "Prediction", "Other"])
+        tab2_1, tab2_2, tab2_3, tab2_4 = st.tabs(["Training", "Model Charts", "Classification Report", "Prediction"])
 
         with tab2_1:
             st.header("K Nearest Neighbor Training Component")
@@ -160,7 +169,7 @@ def classification():
 
     with tab3:
         st.header("Naive Bayes (NB)")
-        tab3_1, tab3_2, tab3_3, tab3_4 = st.tabs(["Training", "Model Charts", "Prediction", "Other"])
+        tab3_1, tab3_2, tab3_3, tab3_4 = st.tabs(["Training", "Model Charts", "Classification Report", "Prediction"])
 
         with tab3_1:
             st.header("Naive Bayes Training Component")
@@ -243,7 +252,7 @@ def regression():
 def clustering():
     """Clustering Page"""
     st.title('Clustering Model')
-    tab1, tab2, tab3, tab4 = st.tabs(["Train", "Elbow Graph", "Clusters", "Prediction"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Train", "Elbow Chart", "Cluster Chart", "Prediction"])
 
     with tab1:
         st.header("Training Component")
@@ -253,7 +262,7 @@ def clustering():
         max_iter = st.selectbox("Max Iter", (300, 350, 400))
 
         selected_n_cluster = st.slider("Set K", min_value=2, max_value=6, value=4)
-        show_clicked = st.button("Train K-means", key=106)
+        show_clicked = st.button("Train K-Means", key=106)
         if show_clicked:
             fig_elbow, fig_clusters = k_means.k_means_train(selected_n_cluster=selected_n_cluster, max_iter=max_iter)
             st.session_state["fig_elbow"] = fig_elbow
@@ -315,8 +324,8 @@ def get_menu(user_name=None, user_password=None):
     side_menu = {
         'Giriş': home,
         'Project Proposal': proposal,
-        'Algorithm Design & Modelling(!)': app_credits,
-        'Project System Design(!)': pipeline,
+        'Algorithm Design & Modelling': algorithm,
+        'Project System Design': pipeline,
         'Dataset Meta Data & EDA': data,
         'Multi Class Classification Algorithms': classification,
         'Regression Algorithms': regression,
@@ -350,12 +359,17 @@ if __name__ == "__main__":
     ROOT_PATH = os.getcwd()
     CFG_PATH = os.path.join(ROOT_PATH, 'cfg')
     # ENV_PATH = os.path.join(ROOT_PATH, '.env')
-    ENV_FILE = os.path.join(CFG_PATH, '.env')
     DATA_PATH = os.path.join(ROOT_PATH, 'data')
     RAW_DATA_PATH = os.path.join(DATA_PATH, 'raw')
     PREPROCESSED_DATA_PATH = os.path.join(DATA_PATH, 'preprocessed')
     PROFILLING_PATH = os.path.join(DATA_PATH, 'profiling')
 
+    os.makedirs(CFG_PATH, exist_ok=True)
+    os.makedirs(RAW_DATA_PATH, exist_ok=True)
+    os.makedirs(PREPROCESSED_DATA_PATH, exist_ok=True)
+    os.makedirs(PROFILLING_PATH, exist_ok=True)
+
+    ENV_FILE = os.path.join(CFG_PATH, '.env')
     DATA_FILE = os.path.join(RAW_DATA_PATH, 'bodyPerformance.csv')
     PREPROCESS_DATA_FILE = os.path.join(PREPROCESSED_DATA_PATH, 'preprocessed_data.csv')
 
@@ -368,9 +382,9 @@ if __name__ == "__main__":
     # print(USER_NAME, USER_PASSWORD)
     
     # Kaggle Secrets
-    KAGGLE_USER_NAME = os.environ.get("KAGGLE_USER_NAME") if os.environ.get("KAGGLE_USER_NAME") is not None else st.secrets["kaggle"]["KAGGLE_USER_NAME"]
-    KAGGLE_KEY = os.environ.get("KAGGLE_KEY") if os.environ.get("KAGGLE_KEY") is not None else st.secrets["kaggle"]["KAGGLE_KEY"]
-    # print(KAGGLE_USER_NAME, KAGGLE_KEY)    
+    # KAGGLE_USER_NAME = os.environ.get("KAGGLE_USER_NAME") if os.environ.get("KAGGLE_USER_NAME") is not None else st.secrets["kaggle"]["KAGGLE_USER_NAME"]
+    # KAGGLE_KEY = os.environ.get("KAGGLE_KEY") if os.environ.get("KAGGLE_KEY") is not None else st.secrets["kaggle"]["KAGGLE_KEY"]
+    # print(KAGGLE_USER_NAME, KAGGLE_KEY)
 
     st.set_page_config(
         page_title="Web Mining Project UI ",
@@ -399,4 +413,3 @@ if __name__ == "__main__":
 
     # Streamlit Menu
     get_menu(user_name=USER_NAME, user_password=USER_PASSWORD)
-

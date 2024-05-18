@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD [ "streamlit", "run", "streamlit_app.py"]
+CMD [ "streamlit", "run", "app.py"]
